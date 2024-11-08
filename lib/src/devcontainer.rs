@@ -11,7 +11,7 @@ struct DevContainer {
     /// The docker image that will be used to create the container.
     image: String,
     /// The customizations applied to the container
-    customizations: Vec<DevContainerCustomizations>,
+    customizations: Vec<Customizations>,
 }
 
 /// Tool specific customizations for the Dev Container schema.
@@ -19,7 +19,7 @@ struct DevContainer {
 /// but this will be extended in the future.
 #[non_exhaustive]
 #[derive(Serialize)]
-enum DevContainerCustomizations {
+enum Customizations {
     /// VSCode specific tool configuration
     VSCode {
         /// List of extensions available in the Dev Container.
@@ -42,7 +42,7 @@ impl From<NiksiConfig> for DevContainer {
                     .course_code
                     .map(|c| format!(" ({c})"))
                     .unwrap_or_default(),
-            customizations: vec![DevContainerCustomizations::VSCode {
+            customizations: vec![Customizations::VSCode {
                 extensions: config.vscode_extensions,
             }],
         }
