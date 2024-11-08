@@ -5,7 +5,7 @@ use serde::Serialize;
 /// The Schema based on which the devcontainer.json file is generated.
 /// For a complete documentation see: https://containers.dev/implementors/json_reference/
 #[derive(Serialize)]
-struct DevContainer {
+pub struct DevContainer {
     /// The name for the Dev Container
     name: String,
     /// The docker image that will be used to create the container.
