@@ -1,34 +1,24 @@
-use std::path::Path;
+mod devcontainer;
 
-mod open;
+use serde::Deserialize;
 
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct NiksiConfig {
-    nix: String,
-}
-
-impl NiksiConfig {
-    pub fn new(nix: String) -> Self {
-        Self { nix }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Niksi {
-    pub config: NiksiConfig,
+/// The Schema of the niksi.json configuration file used for configuring a Dev Container
+#[derive(Deserialize)]
+struct NiksiConfig {
+    /// The name of the course or project
+    name: String,
+    /// Optional course code
+    course_code: Option<String>,
+    /// The version of the course Dev Container
+    version: String,
+    /// The maintainer(s) of the course Dev Container
+    maintainers: Vec<String>,
+    /// Additional packages added to the Dev Container
+    packages: Vec<String>,
+    /// Extensions installed to the VSCode running in the Dev Container
+    vscode_extensions: Vec<String>,
+    /// The Niksi-template used
+    template: Option<String>,
+    /// The Docker registry used for the container image
+    registry: Option<String>,
 }
