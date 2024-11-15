@@ -1,0 +1,10 @@
+{
+  "name": "Niksi project",
+  "course_code": "CS-0000",
+  "version": "0.1",
+  "maintainers": ["Luukas Pörtfors <luukas.portfors@aalto.fi"],
+  "packages": ["htop"],
+  "vscode_extensions": ["scalameta.metals", "scala-lang.scala"],
+  "template": "scala",
+  "registry": "ghcr.io"
+}
