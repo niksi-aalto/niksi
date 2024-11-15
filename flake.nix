@@ -29,10 +29,8 @@
 
       craneLib = crane.mkLib pkgs;
 
-      src = ./.;
-
       commonArgs = {
-        inherit src;
+        src = ./.;
         strictDeps = true;
 
         buildInputs = lib.optionals pkgs.stdenv.isDarwin [
@@ -40,26 +38,32 @@
         ];
       };
 
-      cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+      unfilteredRoot = ./.;
+      src = lib.fileset.toSource {
+        root = unfilteredRoot;
+        fileset = lib.fileset.unions [
+          ./Cargo.toml
+          ./Cargo.lock
+          (craneLib.fileset.commonCargoSources ./cli)
+          (craneLib.fileset.commonCargoSources ./lib)
+        ];
+      };
 
-      niksi-cli = craneLib.buildPackage (commonArgs
+      niksi = craneLib.buildPackage (commonArgs
         // {
-          inherit cargoArtifacts;
-        });
-
-      niksi-lib = craneLib.buildPackage (commonArgs
-        // {
-          inherit cargoArtifacts;
+          cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+          cargoExtraArgs = "-p cli";
+          inherit src;
         });
     in {
       checks = {
-        inherit niksi-cli niksi-lib;
+        inherit niksi;
       };
 
-      packages.default = niksi-cli;
+      packages.default = niksi;
 
       apps.default = flake-utils.lib.mkApp {
-        drv = niksi-cli;
+        drv = niksi;
       };
 
       devShells.default = craneLib.devShell {
