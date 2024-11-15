@@ -21,6 +21,7 @@ pub struct DevContainer {
 #[derive(Serialize)]
 enum Customizations {
     /// VSCode specific tool configuration
+    #[serde(rename = "vscode")]
     VSCode {
         /// List of extensions available in the Dev Container.
         /// Extensions should be specified by their extension id (e.g. "scalameta.metals")

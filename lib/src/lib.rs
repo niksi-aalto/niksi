@@ -4,6 +4,8 @@ use serde::Deserialize;
 use std::path::PathBuf;
 use thiserror::Error;
 
+use devcontainer::DevContainer;
+
 /// The Schema of the niksi.json configuration file used for configuring a Dev Container
 #[derive(Deserialize, Debug, Clone)]
 pub struct NiksiConfig {
@@ -26,13 +28,13 @@ pub struct NiksiConfig {
 }
 
 #[derive(Debug, Clone)]
-struct Niksi {
+pub struct Niksi {
     config: NiksiConfig,
     working_directory: PathBuf,
 }
 
 #[derive(Default, Debug, Clone)]
-struct NiksiBuilder {
+pub struct NiksiBuilder {
     config_file: Option<PathBuf>,
     working_directory: Option<PathBuf>,
 }
@@ -41,10 +43,14 @@ impl Niksi {
     pub fn builder() -> NiksiBuilder {
         NiksiBuilder::new()
     }
+
+    pub fn devcontainer_json(&self) -> Result<String, serde_json::Error> {
+        serde_json::to_string_pretty(&DevContainer::from(self.config.clone()))
+    }
 }
 
 #[derive(Error, Debug)]
-enum BuilderError {
+pub enum BuilderError {
     #[error("Failed to read configuration file {0}")]
     NoSuchFile(#[from] std::io::Error),
     #[error("Malformed configuration file: {0}")]
