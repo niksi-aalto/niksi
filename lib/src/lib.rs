@@ -1,8 +1,13 @@
 mod devcontainer;
 
 use serde::Deserialize;
-use std::path::PathBuf;
+use std::{
+    path::PathBuf,
+    process::{Command, Stdio},
+};
 use thiserror::Error;
+
+use std::io::Write;
 
 use devcontainer::DevContainer;
 
@@ -30,6 +35,7 @@ pub struct NiksiConfig {
 #[derive(Debug, Clone)]
 pub struct Niksi {
     config: NiksiConfig,
+    lock_file: PathBuf,
     output_directory: PathBuf,
 }
 
@@ -37,6 +43,7 @@ pub struct Niksi {
 pub struct NiksiBuilder {
     config_file: Option<PathBuf>,
     output_directory: Option<PathBuf>,
+    lock_file: Option<PathBuf>,
 }
 
 impl Niksi {
@@ -46,6 +53,69 @@ impl Niksi {
 
     pub fn devcontainer_json(&self) -> Result<String, serde_json::Error> {
         serde_json::to_string_pretty(&DevContainer::from(self.config.clone()))
+    }
+
+    pub fn packages_nix(&self) -> String {
+        format!(
+            "{{pkgs, ...}}:{{paths = with pkgs; [{}];}}",
+            self.config.packages.join(" ")
+        )
+    }
+
+    pub fn build(&self) -> Result<PathBuf, Box<dyn std::error::Error + 'static>> {
+        const DEFAULT_TEMPLATE: &str = "github:niksi-aalto/templates#plain";
+
+        let workdir = tempfile::tempdir()?;
+
+        Command::new("nix")
+            .args([
+                "--extra-experimental-features",
+                "nix-command flakes",
+                "flake",
+                "init",
+                "-t",
+            ])
+            .arg(
+                self.config
+                    .template
+                    .clone()
+                    .map(|t| format!("github:niksi-aalto/templates#{}", t))
+                    .unwrap_or(DEFAULT_TEMPLATE.to_string()),
+            )
+            .current_dir(workdir.path())
+            .status()?;
+
+        let extra_paths = format!(
+            "{{pkgs, ...}}:with pkgs; [{}]",
+            self.config.packages.join(" ")
+        );
+        let mut extras_file = std::fs::File::create(workdir.path().join("paths.nix"))?;
+        extras_file.write_all(extra_paths.as_bytes())?;
+
+        if self.lock_file.is_file() {
+            std::fs::copy(self.lock_file.as_path(), workdir.path().join("flake.lock"))?;
+        }
+
+        let result = Command::new("nix")
+            .args([
+                "--extra-experimental-features",
+                "nix-command flakes",
+                "build",
+                "--print-out-paths",
+                ".",
+            ])
+            .current_dir(workdir.path())
+            .stderr(Stdio::inherit())
+            .output()?;
+
+        std::fs::copy(
+            workdir.path().join("flake.lock"),
+            self.output_directory.as_path().join("niksi.lock"),
+        )?;
+
+        Ok(PathBuf::from(
+            String::from_utf8(result.stdout).unwrap().trim(),
+        ))
     }
 }
 
@@ -74,6 +144,11 @@ impl NiksiBuilder {
         self
     }
 
+    pub fn lock_file(mut self, file: impl Into<PathBuf>) -> Self {
+        self.lock_file = Some(file.into());
+        self
+    }
+
     pub fn build(self) -> Result<Niksi, BuilderError> {
         let config = match self.config_file {
             Some(p) => {
@@ -86,6 +161,7 @@ impl NiksiBuilder {
 
         Ok(Niksi {
             config,
+            lock_file: self.lock_file.unwrap_or_default(),
             output_directory: self.output_directory.unwrap_or_default(),
         })
     }
