@@ -30,13 +30,13 @@ pub struct NiksiConfig {
 #[derive(Debug, Clone)]
 pub struct Niksi {
     config: NiksiConfig,
-    working_directory: PathBuf,
+    output_directory: PathBuf,
 }
 
 #[derive(Default, Debug, Clone)]
 pub struct NiksiBuilder {
     config_file: Option<PathBuf>,
-    working_directory: Option<PathBuf>,
+    output_directory: Option<PathBuf>,
 }
 
 impl Niksi {
@@ -69,8 +69,8 @@ impl NiksiBuilder {
         self
     }
 
-    pub fn working_directory(mut self, dir: impl Into<PathBuf>) -> Self {
-        self.working_directory = Some(dir.into());
+    pub fn output_directory(mut self, dir: impl Into<PathBuf>) -> Self {
+        self.output_directory = Some(dir.into());
         self
     }
 
@@ -86,7 +86,7 @@ impl NiksiBuilder {
 
         Ok(Niksi {
             config,
-            working_directory: self.working_directory.unwrap_or_default(),
+            output_directory: self.output_directory.unwrap_or_default(),
         })
     }
 }

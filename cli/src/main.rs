@@ -21,7 +21,7 @@ enum Commands {
         #[arg(short, long, default_value = "niksi.json")]
         config: PathBuf,
         #[arg(short, long, default_value = ".")]
-        working_directory: PathBuf,
+        output_directory: PathBuf,
     },
     Other,
 }
@@ -29,7 +29,7 @@ enum Commands {
 fn build(config: Commands) -> Result<(), Box<dyn std::error::Error + 'static>> {
     let Commands::Build {
         config,
-        working_directory,
+        output_directory,
         ..
     } = config
     else {
@@ -38,7 +38,7 @@ fn build(config: Commands) -> Result<(), Box<dyn std::error::Error + 'static>> {
 
     let niksi = match Niksi::builder()
         .config_file(config.clone())
-        .working_directory(working_directory)
+        .output_directory(output_directory)
         .build()
     {
         Ok(n) => n,
