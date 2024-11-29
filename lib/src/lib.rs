@@ -175,7 +175,7 @@ impl NiksiBuilder {
     /// Specify the niksi json config file.
     /// For the schema of the config file see [`NiksiConfig`]
     ///
-    /// The config file is *required*, meaning that [`Niksibuilder::build`] will fail if no config
+    /// The config file is *required*, meaning that [`NiksiBuilder::build`] will fail if no config
     /// file has been specified.
     pub fn config_file(mut self, file: impl Into<PathBuf>) -> Self {
         self.config_file = Some(file.into());
