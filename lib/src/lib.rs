@@ -34,6 +34,22 @@ pub struct NiksiConfig {
     pub registry: Option<String>,
 }
 
+/// The main Niksi struct used to interface with Nix and Niksi
+///
+/// Can be constructed with the [`NiksiBuilder`] struct available through
+/// [`Niksi::builder`].
+///
+/// Example
+/// ```rust
+/// let niksi = Niksi::builder()
+///     .config_file("niksi.json")
+///     .output_directory("./outdir")
+///     .lock_file("./outdir/niksi.lock")
+///     .build()?;
+///
+/// let devcontainer = niksi.devcontainer_json()?;
+/// let store_path = niksi.build()?;
+/// ```
 #[derive(Debug, Clone)]
 pub struct Niksi {
     config: NiksiConfig,
