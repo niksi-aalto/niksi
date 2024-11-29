@@ -1,4 +1,5 @@
 mod devcontainer;
+mod docker;
 
 use anyhow::{Context, Result};
 
@@ -170,6 +171,18 @@ impl Niksi {
             String::from_utf8(result.stdout).unwrap().trim(),
         ))
     }
+
+    pub fn push(&self, location: PathBuf, cred_file: String) -> Result<(), BuilderError> {
+        let creds = std::fs::read_to_string(cred_file)?;
+        docker::push(
+            location.display().to_string(),
+            self.config.name.clone(),
+            self.config.registry.clone().unwrap(), //TODO: handle this better
+            creds,
+        )?;
+
+        Ok(())
+    }
 }
 
 #[derive(Error, Debug)]
@@ -180,6 +193,8 @@ pub enum BuilderError {
     ParseError(#[from] serde_json::Error),
     #[error("Incomplete build, missing required field {0}")]
     Incomplete(String),
+    #[error("Failed to push image")]
+    PushError,
 }
 
 impl NiksiBuilder {
