@@ -29,6 +29,8 @@ enum Commands {
         output_directory: PathBuf,
         #[arg(short, long, default_value = "niksi.lock")]
         lock_file: PathBuf,
+        #[arg(short, long, default_value = ".credentials")]
+        cred_file: String,
     },
     Other,
 }
@@ -38,6 +40,7 @@ fn build(config: Commands) -> Result<(), Box<dyn std::error::Error + 'static>> {
         config,
         output_directory,
         lock_file,
+        cred_file,
         ..
     } = config
     else {
@@ -68,6 +71,13 @@ fn build(config: Commands) -> Result<(), Box<dyn std::error::Error + 'static>> {
     info!("Building Niksi docker image");
     let result = niksi.build()?;
     info!("Build result in {:#?}", result);
+
+    info!("Pushing image");
+    match niksi.push(result, cred_file) {
+        Err(_) => Err(BuilderError::PushError),
+        _ => Ok(()),
+    }?;
+    info!("Pushing successful");
 
     info!("Generating .devcontainer.json");
     let devcontainer = niksi.devcontainer_json()?;
