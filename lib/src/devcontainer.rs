@@ -5,13 +5,13 @@ use serde::Serialize;
 /// The Schema based on which the devcontainer.json file is generated.
 /// For a complete documentation see: https://containers.dev/implementors/json_reference/
 #[derive(Serialize)]
-struct DevContainer {
+pub struct DevContainer {
     /// The name for the Dev Container
     name: String,
     /// The docker image that will be used to create the container.
     image: String,
     /// The customizations applied to the container
-    customizations: Vec<DevContainerCustomizations>,
+    customizations: Vec<Customizations>,
 }
 
 /// Tool specific customizations for the Dev Container schema.
@@ -19,8 +19,9 @@ struct DevContainer {
 /// but this will be extended in the future.
 #[non_exhaustive]
 #[derive(Serialize)]
-enum DevContainerCustomizations {
+enum Customizations {
     /// VSCode specific tool configuration
+    #[serde(rename = "vscode")]
     VSCode {
         /// List of extensions available in the Dev Container.
         /// Extensions should be specified by their extension id (e.g. "scalameta.metals")
@@ -42,7 +43,7 @@ impl From<NiksiConfig> for DevContainer {
                     .course_code
                     .map(|c| format!(" ({c})"))
                     .unwrap_or_default(),
-            customizations: vec![DevContainerCustomizations::VSCode {
+            customizations: vec![Customizations::VSCode {
                 extensions: config.vscode_extensions,
             }],
         }
