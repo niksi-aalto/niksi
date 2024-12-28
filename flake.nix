@@ -46,6 +46,7 @@
           ./Cargo.lock
           (craneLib.fileset.commonCargoSources ./cli)
           (craneLib.fileset.commonCargoSources ./lib)
+          ./cli/assets
         ];
       };
 
