@@ -1,4 +1,5 @@
 mod devcontainer;
+mod docker;
 
 use anyhow::{Context, Result};
 
@@ -16,7 +17,7 @@ use devcontainer::DevContainer;
 /// The Schema of the niksi.json configuration file used for configuring a Dev Container
 #[derive(Deserialize, Debug, Clone)]
 pub struct NiksiConfig {
-    /// The name of the produced docker image
+    /// The name of the course or project
     pub name: String,
     /// Optional course code
     pub course_code: Option<String>,
@@ -87,6 +88,13 @@ impl Niksi {
     /// Fails if Serialization fails.
     pub fn devcontainer_json(&self) -> Result<String, serde_json::Error> {
         serde_json::to_string_pretty(&DevContainer::from(self.config.clone()))
+    }
+
+    pub fn packages_nix(&self) -> String {
+        format!(
+            "{{pkgs, ...}}:{{paths = with pkgs; [{}];}}",
+            self.config.packages.join(" ")
+        )
     }
 
     /// Outputs the overrides.nix file with paths, name and version set according to the
@@ -170,6 +178,18 @@ impl Niksi {
             String::from_utf8(result.stdout).unwrap().trim(),
         ))
     }
+
+    pub fn push(&self, location: PathBuf, cred_file: String) -> Result<(), BuilderError> {
+        let creds = std::fs::read_to_string(cred_file)?;
+        docker::push(
+            location.display().to_string(),
+            self.config.name.clone(),
+            self.config.registry.clone().unwrap(), //TODO: handle this better
+            creds,
+        )?;
+
+        Ok(())
+    }
 }
 
 #[derive(Error, Debug)]
@@ -180,6 +200,8 @@ pub enum BuilderError {
     ParseError(#[from] serde_json::Error),
     #[error("Incomplete build, missing required field {0}")]
     Incomplete(String),
+    #[error("Failed to push image")]
+    PushError,
 }
 
 impl NiksiBuilder {
