@@ -36,7 +36,7 @@ impl From<NiksiConfig> for DevContainer {
         Self {
             image: format!(
                 "{}{}:{}",
-                config.registry.map(|r| r + "://").unwrap_or_default(),
+                config.registry.map(|r| r + "/").unwrap_or_default(),
                 &config.name,
                 &config.version
             ),
