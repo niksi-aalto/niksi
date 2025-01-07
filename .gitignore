@@ -8,3 +8,6 @@ result
 
 # Niksi
 .credentials
+.devcontainer.json
+niksi.json
+niksi.lock
