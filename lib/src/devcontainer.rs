@@ -11,7 +11,15 @@ pub struct DevContainer {
     /// The docker image that will be used to create the container.
     image: String,
     /// The customizations applied to the container
-    customizations: Vec<Customizations>,
+    customizations: Customizations,
+}
+
+/// VSCode specific tool configuration
+#[derive(Serialize)]
+pub struct VSCode {
+    /// List of extensions available in the Dev Container.
+    /// Extensions should be specified by their extension id (e.g. "scalameta.metals")
+    extensions: Vec<String>,
 }
 
 /// Tool specific customizations for the Dev Container schema.
@@ -19,14 +27,8 @@ pub struct DevContainer {
 /// but this will be extended in the future.
 #[non_exhaustive]
 #[derive(Serialize)]
-enum Customizations {
-    /// VSCode specific tool configuration
-    #[serde(rename = "vscode")]
-    VSCode {
-        /// List of extensions available in the Dev Container.
-        /// Extensions should be specified by their extension id (e.g. "scalameta.metals")
-        extensions: Vec<String>,
-    },
+pub struct Customizations {
+    vscode: VSCode,
 }
 
 impl From<NiksiConfig> for DevContainer {
@@ -43,9 +45,11 @@ impl From<NiksiConfig> for DevContainer {
                     .course_code
                     .map(|c| format!(" ({c})"))
                     .unwrap_or_default(),
-            customizations: vec![Customizations::VSCode {
-                extensions: config.vscode_extensions,
-            }],
+            customizations: Customizations {
+                vscode: VSCode {
+                    extensions: config.vscode_extensions,
+                },
+            },
         }
     }
 }
