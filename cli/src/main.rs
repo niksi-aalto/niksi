@@ -23,6 +23,8 @@ enum Commands {
         /// Location of the config file.
         /// If no such file exists the program creates a sample configuration file in that
         /// location and then exits.
+        #[arg(short, long, action = clap::ArgAction::SetTrue)]
+        push: bool,
         #[arg(short, long, default_value = "niksi.json")]
         config: PathBuf,
         #[arg(short, long, default_value = ".")]
@@ -37,6 +39,7 @@ enum Commands {
 
 fn build(config: Commands) -> Result<(), Box<dyn std::error::Error + 'static>> {
     let Commands::Build {
+        push,
         config,
         output_directory,
         lock_file,
@@ -72,12 +75,14 @@ fn build(config: Commands) -> Result<(), Box<dyn std::error::Error + 'static>> {
     let result = niksi.build()?;
     info!("Build result in {:#?}", result);
 
-    info!("Pushing image");
-    match niksi.push(result, cred_file) {
-        Err(_) => Err(BuilderError::PushError),
-        _ => Ok(()),
-    }?;
-    info!("Pushing successful");
+    if push {
+        info!("Pushing image");
+        match niksi.push(result, cred_file) {
+            Err(_) => Err(BuilderError::PushError),
+            _ => Ok(()),
+        }?;
+        info!("Pushing successful");
+    }
 
     info!("Generating .devcontainer.json");
     let devcontainer = niksi.devcontainer_json()?;
