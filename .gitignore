@@ -1,6 +1,10 @@
+# Rust
 target
 
-result
+# Nix
+.devenv
 .direnv
+result
 
+# Niksi
 .credentials
