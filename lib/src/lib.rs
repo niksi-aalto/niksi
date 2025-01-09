@@ -124,6 +124,7 @@ impl Niksi {
                 "nix-command flakes",
                 "flake",
                 "init",
+                "--refresh",
                 "-t",
             ])
             .arg(
