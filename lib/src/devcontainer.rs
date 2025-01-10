@@ -10,6 +10,8 @@ pub struct DevContainer {
     name: String,
     /// The docker image that will be used to create the container.
     image: String,
+    /// The username of the non-root user
+    remoteUser: &'static str,
     /// The customizations applied to the container
     customizations: Customizations,
 }
@@ -45,6 +47,7 @@ impl From<NiksiConfig> for DevContainer {
                     .course_code
                     .map(|c| format!(" ({c})"))
                     .unwrap_or_default(),
+            remoteUser: "niksi",
             customizations: Customizations {
                 vscode: VSCode {
                     extensions: config.vscode_extensions,
