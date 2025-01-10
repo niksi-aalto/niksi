@@ -47,6 +47,7 @@ Note that you will not have to install anything to your computer.
 
 
 NOTE: The dev container image might be large so make sure you have a good internet connection
+
 NOTE 2: This image, in all likelihood, only has to be downloaded once during the course. Each exercise round will use the same image.
 
 ## Troubleshooting
@@ -54,7 +55,13 @@ NOTE 2: This image, in all likelihood, only has to be downloaded once during the
 ### Workaround for non-ascii usernames
 
 The VSCode Dev Containers plugin by Microsoft [fails to install WSL and Docker for Windows users with non-ascii characters (e.g. "öäå") in their name.](https://github.com/microsoft/vscode-remote-release/issues/10454)
-The workaround for this is to [install WSL manually](https://learn.microsoft.com/en-us/windows/wsl/install).
+The failure is indicated by the following error:
+![](./images/non-ascii-error.png)
+
+The workaround for this is to install WSL manually.
+
+Run `wsl --install --no-distribution` in Windows Terminal and then restart your computer.
+Then proceed with opening the course module.
 
 ### If Docker installation fails
 try `Dev Containers: Reinstall Docker in WSL` then restart vscode
