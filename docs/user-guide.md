@@ -53,7 +53,9 @@ NOTE 2: This image, in all likelihood, only has to be downloaded once during the
 
 ### Workaround for non-ascii usernames
 
+The VSCode Dev Containers plugin by Microsoft [fails to install WSL and Docker for Windows users with non-ascii characters (e.g. "öäå") in their name.](https://github.com/microsoft/vscode-remote-release/issues/10454)
+The workaround for this is to [install WSL manually](https://learn.microsoft.com/en-us/windows/wsl/install).
+
 ### If Docker installation fails
-try `Dev Containers: Reinstall Docker in WSL`
-then restart vscode
+try `Dev Containers: Reinstall Docker in WSL` then restart vscode
 
