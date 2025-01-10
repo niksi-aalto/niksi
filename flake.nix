@@ -81,7 +81,7 @@
             config,
             ...
           }: {
-            packages = [pkgs.skopeo niksi];
+            packages = [pkgs.dive pkgs.skopeo niksi];
 
             languages.rust = {
               enable = true;
