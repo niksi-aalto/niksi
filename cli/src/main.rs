@@ -20,11 +20,11 @@ struct Args {
 #[derive(Subcommand, Debug, Clone)]
 enum Commands {
     Build {
+        #[arg(short, long, action = clap::ArgAction::SetTrue)]
+        push: bool,
         /// Location of the config file.
         /// If no such file exists the program creates a sample configuration file in that
         /// location and then exits.
-        #[arg(short, long, action = clap::ArgAction::SetTrue)]
-        push: bool,
         #[arg(short, long, default_value = "niksi.json")]
         config: PathBuf,
         #[arg(short, long, default_value = ".")]
