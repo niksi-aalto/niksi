@@ -59,3 +59,7 @@ The workaround for this is to [install WSL manually](https://learn.microsoft.com
 ### If Docker installation fails
 try `Dev Containers: Reinstall Docker in WSL` then restart vscode
 
+### Running tests fails
+
+If you get this error while running tests, try running them again.
+![](./images/error-debuggee.png)
