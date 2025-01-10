@@ -5,13 +5,14 @@ use serde::Serialize;
 /// The Schema based on which the devcontainer.json file is generated.
 /// For a complete documentation see: https://containers.dev/implementors/json_reference/
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DevContainer {
     /// The name for the Dev Container
     name: String,
     /// The docker image that will be used to create the container.
     image: String,
     /// The username of the non-root user
-    remoteUser: &'static str,
+    remote_user: &'static str,
     /// The customizations applied to the container
     customizations: Customizations,
 }
@@ -47,7 +48,7 @@ impl From<NiksiConfig> for DevContainer {
                     .course_code
                     .map(|c| format!(" ({c})"))
                     .unwrap_or_default(),
-            remoteUser: "niksi",
+            remote_user: "niksi",
             customizations: Customizations {
                 vscode: VSCode {
                     extensions: config.vscode_extensions,
