@@ -20,6 +20,7 @@ struct Args {
 #[derive(Subcommand, Debug, Clone)]
 enum Commands {
     Build {
+        /// Whether to push the built image to the configured registry.
         #[arg(short, long, action = clap::ArgAction::SetTrue)]
         push: bool,
         /// Location of the config file.
