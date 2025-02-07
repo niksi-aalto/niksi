@@ -4,6 +4,14 @@
 
 Niksi is a tool for creating Dev Container compatible docker development containers with Nix.
 
+## What are Dev Containers?
+
+[Development Containers](https://containers.dev/) is an open specification by Microsoft for creating and using containers as development environments.
+
+> A development container (or dev container for short) allows you to use a container as a full-featured development environment. It can be used to run an application, to separate tools, libraries, or runtimes needed for working with a codebase, and to aid in continuous integration and testing. Dev containers can be run locally or remotely, in a private or public cloud, in a variety of supporting tools and editors.
+
+Dev Containers are supported by the Visual Studio Code editor with the help of an extension written and maintained by Microsoft.
+
 ## Niksi installation
 
 This guide covers installing Niksi for Windows running VSCode.
