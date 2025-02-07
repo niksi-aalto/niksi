@@ -70,3 +70,6 @@ try `Dev Containers: Reinstall Docker in WSL` then restart vscode
 
 If you get this error while running tests, try running them again.
 ![](./images/error-debuggee.png)
+
+This error is displayed when metals isn't quick enough to compile and start the program, which causes VSCode to grow impatient and ultimately give up.
+If the problem persists, try building the project manually and then running the tests.
