@@ -10,6 +10,7 @@ pub fn push(
 ) -> Result<(), BuilderError> {
     Command::new("skopeo")
         .args([
+            "--insecure-policy",
             "copy",
             &format!("docker-archive:{location}"),
             &format!("docker://{registry}/{name}:latest"),
