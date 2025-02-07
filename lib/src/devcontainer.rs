@@ -48,7 +48,7 @@ impl From<NiksiConfig> for DevContainer {
                     .course_code
                     .map(|c| format!(" ({c})"))
                     .unwrap_or_default(),
-            remote_user: "niksi",
+            remote_user: "vscode",
             customizations: Customizations {
                 vscode: VSCode {
                     extensions: config.vscode_extensions,
