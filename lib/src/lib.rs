@@ -178,6 +178,7 @@ impl Niksi {
         docker::push(
             location.display().to_string(),
             self.config.name.clone(),
+            self.config.version.clone(),
             self.config.registry.clone().unwrap(), //TODO: handle this better
             creds,
         )?;

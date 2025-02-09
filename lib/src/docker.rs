@@ -5,6 +5,7 @@ use crate::BuilderError;
 pub fn push(
     location: String,
     name: String,
+    version: String,
     registry: String,
     creds: String,
 ) -> Result<(), BuilderError> {
@@ -13,7 +14,7 @@ pub fn push(
             "--insecure-policy",
             "copy",
             &format!("docker-archive:{location}"),
-            &format!("docker://{registry}/{name}:latest"),
+            &format!("docker://{registry}/{name}:{version}"),
             &format!("--dest-creds={creds}"),
         ])
         .stderr(Stdio::inherit())
