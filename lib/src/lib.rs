@@ -113,7 +113,7 @@ impl Niksi {
     /// 5. Returning the path of the build result (in the Nix store)
     ///
     /// Fails if any of the Nix commands or fs access fails
-    pub fn build(&self) -> Result<PathBuf> {
+    pub fn build(&self, verbose: bool) -> Result<PathBuf> {
         const DEFAULT_TEMPLATE: &str = "github:niksi-aalto/templates#plain";
 
         let workdir = tempfile::tempdir().context("Failed to create tempdir to work in")?;
@@ -150,14 +150,21 @@ impl Niksi {
                 .context("Failed to copy niksi lockfile")?;
         }
 
-        let result = Command::new("nix")
-            .args([
-                "--extra-experimental-features",
-                "nix-command flakes",
-                "build",
-                "--print-out-paths",
-                ".",
-            ])
+        let mut result_cmd = Command::new("nix");
+
+        result_cmd.args([
+            "--extra-experimental-features",
+            "nix-command flakes",
+            "build",
+            "--print-out-paths",
+            ".",
+        ]);
+
+        if verbose {
+            result_cmd.arg("-L");
+        }
+
+        let result = result_cmd
             .current_dir(workdir.path())
             .stderr(Stdio::inherit())
             .output()

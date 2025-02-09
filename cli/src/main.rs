@@ -34,6 +34,8 @@ enum Commands {
         lock_file: PathBuf,
         #[arg(short, long, default_value = ".credentials")]
         cred_file: String,
+        #[arg(short, long, action = clap::ArgAction::SetTrue)]
+        verbose: bool,
     },
     Other,
 }
@@ -45,6 +47,7 @@ fn build(config: Commands) -> Result<(), Box<dyn std::error::Error + 'static>> {
         output_directory,
         lock_file,
         cred_file,
+        verbose,
         ..
     } = config
     else {
@@ -73,7 +76,7 @@ fn build(config: Commands) -> Result<(), Box<dyn std::error::Error + 'static>> {
     };
 
     info!("Building Niksi docker image");
-    let result = niksi.build()?;
+    let result = niksi.build(verbose)?;
     info!("Build result in {:#?}", result);
 
     if push {
