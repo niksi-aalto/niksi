@@ -85,9 +85,13 @@ If the problem persists, try building the project manually and then running the 
 ### Opening the Dev Container fails with a failure not mentioned above
 
 1. Check that you're connected to the internet
-    Downloading and setting up the dev container requires internet connection
+
+Downloading and setting up the dev container requires internet connection
+
 2. Try rebuilding the container
-    Sometimes the VSCode extensions tries to incorrectly re-use an old container.
-    Rebuilding the container can be done with the `Dev Containers: Rebuild and Open in Container` command.
-    You can execute the command by pressing `Ctrl+Shift+P` and then searching for it.
+
+Sometimes the VSCode extensions tries to incorrectly re-use an old container.
+Rebuilding the container can be done with the `Dev Containers: Rebuild and Open in Container` command.
+You can execute the command by pressing `Ctrl+Shift+P` and then searching for it.
+
 3. Contact course staff
